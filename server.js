@@ -12,7 +12,7 @@ const io = new Server(server, {
 const { User, Room } = require("./classes");
 const { format } = require("path");
 const db = require("./db");
-
+const port = process.env.port || 4000;
 let users = new db("users.json");
 let rooms = [];
 let usernames = [];
@@ -79,8 +79,8 @@ io.on("connection", (socket) => {
   });
 });
 
-server.listen(process.env.port || 4000, () => {
-  console.log("listening on *:4000");
+server.listen(port, () => {
+  console.log(`listening on ${port}`);
 });
 
 function findIndex(code) {
