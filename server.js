@@ -31,8 +31,31 @@ app.get("/", (req, res) => {
 });
 
 app.get("/signup", (req, res) => {
-  console.log(req.query);
-  res.send(JSON.stringify(req.query));
+  const { u, p } = req.query;
+  let result = { status: "error", error: "unknown" };
+
+  if (!users.search(u)) {
+    users.add(u, { username: u, password: p, friends: [], requests: [] });
+    result.status = "ok";
+    result.error = "none";
+    res.send(JSON.stringify(result));
+  } else {
+    res.send(JSON.stringify(result));
+  }
+});
+app.get("/login", (req, res) => {
+  const { u, p } = req.query;
+  user = users.search(u);
+  let result = { status: "error", error: "unknown" };
+  if (!!users) {
+    if (p == user.password) {
+      result.status = "ok";
+      result.error = "none";
+      res.send(JSON.stringify(result));
+    } else {
+      res.send(JSON.stringify(result));
+    }
+  }
 });
 
 io.on("connection", (socket) => {

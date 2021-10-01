@@ -4,7 +4,7 @@ class db {
   constructor(fileName) {
     this.fileName = fileName;
     this.data = JSON.parse(
-      fs.readFileSync(fileName, { encoding: "utf-8", flag: "r" })
+      fs.readFileSync(fileName, { encoding: "utf8", flag: "r" })
     );
   }
   search(string) {
@@ -23,6 +23,7 @@ class db {
         }
       });
     }
+    // this.update();
     return this;
   }
   remove(string) {
@@ -35,6 +36,7 @@ class db {
         }
       });
     }
+    // this.update();
     return this;
   }
   edit(string, value) {
@@ -47,8 +49,19 @@ class db {
         console.log("edited");
       });
     }
+    // this.update();
     return this;
   }
+  // update() {
+  //   // console.log(
+  //   //   fs.readFileSync(this.fileName, { encoding: "utf8", flag: "r" }),
+  //   //   "ok"
+  //   // );
+  //   fs.readFile(this.fileName, { encoding: "utf8" }, (err, data) => {
+  //     this.data = JSON.parse(data);
+  //   });
+  //   return this;
+  // }
 }
 
 module.exports = db;

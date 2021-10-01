@@ -1,1 +1,45 @@
-{"d1ndonlymdhe":{"friends":[],"requests":[],"username":"d1ndonlymdhe","password":"ockg5lmed"},"terobau":{"friends":[],"requests":[],"username":"terobau","password":"12345"}}
+{
+  "user1": {
+    "username": "user1",
+    "password": "dummy",
+    "friends": [],
+    "requests": [],
+    "rooms": []
+  },
+  "ayush": {
+    "username": "ayush",
+    "password": "12345",
+    "friends": [],
+    "requests": []
+  },
+  "d1ndonly": {
+    "username": "d1ndonly",
+    "password": "abcdef",
+    "friends": [],
+    "requests": []
+  },
+  "qwerty": {
+    "username": "qwerty",
+    "password": "asdfgh",
+    "friends": [],
+    "requests": []
+  },
+  "zxcv": {
+    "username": "zxcv",
+    "password": "zxcv",
+    "friends": [],
+    "requests": []
+  },
+  "tyui": {
+    "username": "tyui",
+    "password": "tyui",
+    "friends": [],
+    "requests": []
+  },
+  "Tero baje": {
+    "username": "Tero baje",
+    "password": "1234",
+    "friends": [],
+    "requests": []
+  }
+}
