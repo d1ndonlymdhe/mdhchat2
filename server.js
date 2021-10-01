@@ -16,7 +16,7 @@ const port = process.env.PORT || 4000;
 let users = new db("users.json");
 let rooms = [];
 let usernames = [];
-
+console.log("okay");
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
@@ -57,42 +57,65 @@ app.get("/login", (req, res) => {
     }
   }
 });
+// app.get("/createRoom", (req, res) => {
+//   const { u } = req.query;
+//   const user = users.search(u);
+//   const codes = rooms.map((room) => room.code);
+//   let code = Math.floor(Math.random() * 10000);
+//   let bool = codes.includes(code);
+//   while (bool) {
+//     code = Math.floor(Math.random() * 10000);
+//   }
+//   const room = new Room(user, code);
+//   rooms.push(room);
+//   const result = { status: "ok", error: "none", msg: { code: code } };
+//   res.send(JSON.stringify(result));
+// });
+// app.get("/joinRoom", (req, res) => {
+//   const { u, code } = req.query;
+//   if (!rooms.map((room) => room.code).includes(code)) {
+//     const room = rooms[findIndex(code)];
 
+//   }
+// });
 io.on("connection", (socket) => {
   console.log("new user connected");
   socket.on("create", (username) => {
-    if (!usernames.includes(username)) {
-      usernames.push(username);
-      const user = new User(username, socket);
-      const codes = rooms.map((room) => room.code);
-      let code = Math.floor(Math.random() * 1000);
-      let bool = codes.includes(code);
-      while (bool) {
-        code - Math.floor(Math.random() * 1000);
-      }
-      const room = new Room(user, code);
-      rooms.push(room);
-      console.log(username, code);
-      socket.emit("roomCreated", username, code);
-    } else {
-      socket.emit("error", "username is already taken");
+    // if (!usernames.includes(username)) {
+
+    // } else {
+    //   socket.emit("error", "username is already taken");
+    // }
+    usernames.push(username);
+    const user = new User(username, socket);
+    const codes = rooms.map((room) => room.code);
+    let code = Math.floor(Math.random() * 1000);
+    let bool = codes.includes(code);
+    while (bool) {
+      code = Math.floor(Math.random() * 1000);
     }
+    const room = new Room(user, code);
+    rooms.push(room);
+    console.log(username, code);
+    socket.emit("roomCreated", username, code);
   });
   socket.on("join", (username, code) => {
-    if (!usernames.includes(username)) {
-      usernames.push(username);
-      if (!rooms.map((room) => room.code).includes(code)) {
-        const user = new User(username, socket);
-        const room = rooms[findIndex(code)];
-        room.addUser(user);
-        console.log(username);
-        room.emitAll("newUser", { username: username });
-        socket.emit("roomJoined", username, code);
-      } else {
-        socket.emit("error", "no such room");
-      }
+    console.log("joining", code, rooms);
+    // if (!usernames.includes(username)) {
+    //   usernames.push(username);
+
+    // } else {
+    //   socket.emit("error", "username already taken");
+    // }
+    if (!rooms.map((room) => room.code).includes(code)) {
+      const user = new User(username, socket);
+      const room = rooms[findIndex(code)];
+      room.addUser(user);
+      console.log(username);
+      room.emitAll("newUser", { username: username });
+      socket.emit("roomJoined", username, code);
     } else {
-      socket.emit("error", "username already taken");
+      socket.emit("error", "no such room");
     }
   });
   socket.on("msg", (code, msg, username) => {
