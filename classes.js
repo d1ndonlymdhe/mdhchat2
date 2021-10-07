@@ -15,6 +15,7 @@ class Room {
   }
   emitAll(obj, msg) {
     const sockets = this.users.map((user) => user.socket);
+    console.log(msg);
     sockets.forEach((socket) => socket.emit(obj, msg));
   }
 }

@@ -16,7 +16,6 @@ const port = process.env.PORT || 4000;
 let users = new db("users.json");
 let rooms = [];
 let usernames = [];
-console.log("okay");
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
