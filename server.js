@@ -70,17 +70,20 @@ io.on("connection", (socket) => {
     rooms.push(room);
     console.log(username, code);
     socket.emit("roomCreated", username, code);
+    room.emitAll("updateUsers", { users: room.users });
   });
   socket.on("join", (username, code) => {
     console.log("joining", code, rooms);
-
     if (!rooms.map((room) => room.code).includes(code)) {
       const user = new User(username, socket);
       const room = rooms[findIndex(code)];
       room.addUser(user);
       console.log(username);
-      room.emitAll("newUser", { username: username });
       socket.emit("roomJoined", username, code);
+
+      room.emitAll("newUser", { username: username });
+      console.log(room.users);
+      room.emitAll("updateUsers", { users: room.users });
     } else {
       socket.emit("error", "no such room");
     }
