@@ -6,9 +6,10 @@ class User {
 }
 class Room {
   users = [];
-  constructor(user, code) {
+  constructor(user, code, key) {
     this.users.push(user);
     this.code = code;
+    this.key = key;
   }
   addUser(user) {
     this.users.push(user);

@@ -30,11 +30,17 @@ app.get("/", (req, res) => {
 });
 
 app.get("/signup", (req, res) => {
-  const { u, p } = req.query;
+  const { u, p, pub_key } = req.query;
   let result = { status: "error", error: "unknown" };
 
   if (!users.search(u)) {
-    users.add(u, { username: u, password: p, friends: [], requests: [] });
+    users.add(u, {
+      username: u,
+      password: p,
+      pub_key,
+      friends: [],
+      requests: [],
+    });
     result.status = "ok";
     result.error = "none";
     res.send(JSON.stringify(result));
@@ -56,8 +62,21 @@ app.get("/login", (req, res) => {
     }
   }
 });
+app.get("/pub_key", (req, res) => {
+  const { u } = req.query;
+  let result = { status: "error", error: "unknown" };
+  if (users.search(u)) {
+    result.status = "ok";
+    result.error = "none";
+    result.pub_key = users.search(u).pub_key;
+    res.send(JSON.stringify(result));
+  } else {
+    res.send(JSON.stringify(result));
+  }
+});
+
 io.on("connection", (socket) => {
-  socket.on("create", (username) => {
+  socket.on("create", (username, guestName, encryptedKey) => {
     usernames.push(username);
     const user = new User(username, socket);
     const codes = rooms.map((room) => room.code);
@@ -66,24 +85,29 @@ io.on("connection", (socket) => {
     while (bool) {
       code = Math.floor(Math.random() * 1000);
     }
-    const room = new Room(user, code);
+    const room = new Room(user, code, encryptedKey);
     rooms.push(room);
     console.log(username, code);
-    socket.emit("roomCreated", username, code);
-    room.emitAll("updateUsers", { users: room.users });
+    socket.emit("roomCreated", username, code, encryptedKey);
+    room.emitAll("updateUsers", {
+      users: room.users.map((user) => ({ username: user.username })),
+    });
   });
   socket.on("join", (username, code) => {
+    console.log("joining", code, rooms);
     console.log("joining", code, rooms);
     if (!rooms.map((room) => room.code).includes(code)) {
       const user = new User(username, socket);
       const room = rooms[findIndex(code)];
       room.addUser(user);
       console.log(username);
-      socket.emit("roomJoined", username, code);
+      socket.emit("roomJoined", username, code, room.key);
 
       room.emitAll("newUser", { username: username });
       console.log(room.users);
-      room.emitAll("updateUsers", { users: room.users });
+      room.emitAll("updateUsers", {
+        users: room.users.map((user) => ({ username: user.username })),
+      });
     } else {
       socket.emit("error", "no such room");
     }
